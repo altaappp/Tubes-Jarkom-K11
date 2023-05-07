@@ -1,38 +1,33 @@
-import socket
-HOST = "127.0.0.1"
-PORT = 12000
+ from socket import *
 
-def tcp_server():
-    sockServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sockServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+serverName = 'localhost'
+serverPort = 12000
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind(('', serverPort))
+serverSocket.listen(1)
+print('Server is Ready...')
 
-    sockServer.bind((HOST, PORT))
+while True:
+    # Establish the connection
+    connectionSocket, addr = serverSocket.accept()
+    try:
+        message = connectionSocket.recv(1024)
+        filename = message.split()[1]
+        f = open(filename[1:], 'rb')
+        outputdata = f.read()
+        f.close()
+        # Send the HTTP status code and content of the requested file to the client
+        connectionSocket.send(b'HTTP/1.0 200 OK\r\n\r\n' + outputdata)
+        connectionSocket.close()
+    except IOError:
+        # Send response message for file not found
+        response_header = 'HTTP/1.1 404 Not Found\nContent-Type: text/html\n\n'
+        response_data = b'<html><body><h1>404 Not Found</h1><</body></html>'
+        
+        response = response_header.encode() + response_data
+        connectionSocket.sendall(response)
 
-    sockServer.listen()
+        # Close client socket
+        connectionSocket.close()
 
-    print("Ready")
-
-    while True:
-        sockClient, clientAddr = sockServer.accept()
-
-        request = sockClient.recv(1024).decode()
-        print("From client :"+request)
-
-        response = handleReq()
-        sockClient.send(response.encode())
-
-        sockClient.close()
-
-    sockServer.close()
-
-def handleReq():
-    respone_line = "HTTP/1.1 200 OK\r\n"
-    content_type = "Content-Type: text/html\r\n\r\n"
-    file = open("files/ind.html", 'r')
-    message_body = file.read()
-    file.close()
-    response = respone_line+content_type+message_body
-    return response
-
-if __name__ == "__main__":
-    tcp_server()
+serverSocket.close()
