@@ -1,19 +1,23 @@
-import socket #mengimport socket
+# Mengimport socket
+import socket
 
-HOST = 'localhost' #nama host
-PORT = 12000 #menetapkan nomor port
+HOST = 'localhost'
+# Menetapkan nomor port
+PORT = 12000
 
-filename = input("Enter file name: ") #meminta inputan nama file yang diinginkan kepada client
+# Meminta input nama file yang diinginkan kepada client
+filename = input("Enter file name: ")
 request = f"GET /{filename} HTTP/1.0\r\nHost: {HOST}\r\n\r\n"
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket: #membuat socket
-    client_socket.connect((HOST, PORT)) #connect 
+# Membuat socket
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+    client_socket.connect((HOST, PORT))
     
-    # Send the GET request to the server
+    # Mengirim permintaan GET ke server
     client_socket.sendall(request.encode('utf-8'))
     
-    # recv respon dari server
-    response = client_socket.recv(1024) 
+    # Menerima respon dari server
+    response = client_socket.recv(1024)
     
     if not response:
         print("No response from the server.")
@@ -24,10 +28,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket: #membua
             print("Invalid response from the server.")
         else:
             status_code, content = response_parts[0], response_parts[1]
-            if status_code == b'HTTP/1.0 200 OK': #status OK
+            if status_code == b'HTTP/1.0 200 OK':
                 # Save the file to the local directory
-                with open(f"path\\{filename}", 'wb') as f: #path diganti dengan directory
+                with open(f"path\\{filename}", 'wb') as f:
                     f.write(content)
-                print(f"File '{filename}' saved to the local directory.") #jika berhasil di save
+                print(f"File '{filename}' saved to the local directory.")
             else:
-                print("File not found on the server.") #respon jika file tidak ada
+                print("File not found on the server.")
