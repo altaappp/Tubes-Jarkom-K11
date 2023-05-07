@@ -19,17 +19,18 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
     # Menerima respon dari server
     response = client_socket.recv(1024)
     
+    # Output ketika tidak ada respon
     if not response:
         print("No response from the server.")
     else:
-        # Parse the HTTP response
+        # Parse HTTP response
         response_parts = response.split(b'\r\n\r\n')
         if len(response_parts) < 2:
             print("Invalid response from the server.")
         else:
             status_code, content = response_parts[0], response_parts[1]
-            if status_code == b'HTTP/1.0 200 OK':
-                # Save the file to the local directory
+            if status_code == b'HTTP/1.0 200 OK': 
+                # Menyimpan file ke local directory
                 with open(f"path\\{filename}", 'wb') as f:
                     f.write(content)
                 print(f"File '{filename}' saved to the local directory.")
