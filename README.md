@@ -1,2 +1,2 @@
-# TubesJarkom
-Tugas Besar Jarkom 2023
+# Tubes Jarkom
+Web Server TCP Socket Programming
