@@ -1,0 +1,140 @@
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 3663
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Color to Black and White Converter</title>
+  <style>
+    p {
+      margin-top: 10px;
+    }
+    h1 {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+	
+	body {
+        min-height: 100vh;
+        width: 100%;
+        background: linear-gradient(120deg, black, white, black);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+	
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+    
+    #image-preview {
+      margin-top: 0px;
+      width: 600px;
+      height: auto;
+      border: 2px solid #000;
+    }
+    
+    #convert-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    input[type="file"]{
+    display: none;
+    }
+
+    label {
+    margin-top: -15px;
+    align-items: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    background: #1E90FF;
+    width: 160px;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #fff;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: -10px;
+    }
+
+    button {
+    align-items: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    background: #303030;
+    width: 185px;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #fff;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin-bottom:10px;
+  }
+  </style>
+  <script>
+    function convertToBlackAndWhite() {
+      var inputFile = document.getElementById("inputFile");
+      var imagePreview = document.getElementById("image-preview");
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function() {
+          var canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          var context = canvas.getContext("2d");
+          context.drawImage(img, 0, 0);
+
+          var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          var data = imageData.data;
+          for (var i = 0; i < data.length; i += 4) {
+            var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+            data[i] = avg;
+            data[i + 1] = avg;
+            data[i + 2] = avg;
+          }
+
+          context.putImageData(imageData, 0, 0);
+          imagePreview.src = canvas.toDataURL();
+        };
+      };
+
+      reader.readAsDataURL(inputFile.files[0]);
+    }
+  </script>
+</head>
+<body>
+  <div id="container">
+    <p>Altaf Defassya Abadi 130121022 | Elvira Wulandari 1301210499 | Karina Diva Aulia Igani 1301213412</p>
+    <h1 style="margin-bottom: 0px;">Black and White Converter</h1>
+	  <h3 style="font-style: italic;">Transform Your Photos into Timeless Classics</h3>
+    <h1></h1>
+    <input type="file" id="inputFile">
+    <label for="inputFile"><i class="fa-solid.fa-upload"></i>Choose File</label>
+    <button id="convert-button" onclick="convertToBlackAndWhite()">Convert</button>
+    <br>
+    <br>
+    <img id="image-preview" alt="Result">
+  </div>
+</body>
+</html>
